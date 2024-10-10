@@ -17,7 +17,18 @@ const int MPU_ADDRESS = 0x68;
 const int I2C_SDA_GPIO = 4;
 const int I2C_SCL_GPIO = 5;
 // vamos fazer a insercao codigo
-
+if (mpu6050_init()) {
+    printf("MPU6050 init failed\n");
+    return 1;
+}
+if (mpu6050_set_accel_range(MPU6050_ACCEL_RANGE_2G)) {
+    printf("Failed to set accel range\n");
+    return 1;
+}
+if (mpu6050_set_gyro_range(MPU6050_GYRO_RANGE_250)) {
+    printf("Failed to set gyro range\n");
+    return 1;
+}
 
 static void mpu6050_reset() {
     // Two byte reset. First byte register, second byte data
