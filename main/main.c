@@ -12,9 +12,12 @@
 
 #include <Fusion.h>
 
+
 const int MPU_ADDRESS = 0x68;
 const int I2C_SDA_GPIO = 4;
 const int I2C_SCL_GPIO = 5;
+// vamos fazer a insercao codigo
+
 
 static void mpu6050_reset() {
     // Two byte reset. First byte register, second byte data
