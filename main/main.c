@@ -53,7 +53,30 @@ static void read_mpu6050_raw(int16_t accel[3], int16_t gyro[3], int16_t *temp) {
         accel[i] = (buffer[i * 2] << 8) | buffer[(i * 2) + 1];
     }
 
-   
+    // Lê giroscópio
+    reg = 0x43;
+    i2c_write_blocking(i2c_default, MPU_ADDRESS, &reg, 1, true);
+    i2c_read_blocking(i2c_default, MPU_ADDRESS, buffer, 6, false);
+    for (int i = 0; i < 3; i++) {
+        gyro[i] = (buffer[i * 2] << 8) | buffer[(i * 2) + 1];
+    }
+
+    // Lê temperatura
+    reg = 0x41;
+    i2c_write_blocking(i2c_default, MPU_ADDRESS, &reg, 1, true);
+    i2c_read_blocking(i2c_default, MPU_ADDRESS, buffer, 2, false);
+    *temp = (buffer[0] << 8) | buffer[1];
+}
+
+// Tarefa para enviar dados do MPU6050
+void data_transmit_task(void *params) {
+    ImuData data;
+    while (1) {
+        if (xQueueReceive(dataQueue, &data, portMAX_DELAY)) {
+            printf("Eixo: %d, Valor: %d\n", data.axis, data.value); // Simples print no lugar do envio
+        }
+    }
+}
 
 // Tarefa de leitura e processamento do MPU6050
 void mpu6050_processing_task(void *params) {
